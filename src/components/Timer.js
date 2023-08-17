@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useState, useEffect } from "react";
 import "./../App.css";
 
 function convertToSecondsFromTime(days, hours, minutes, seconds) {
-  return seconds + minutes * 60 + hours * 3600 + days * 86400;
+  const totalSeconds = seconds + minutes * 60 + hours * 3600 + days * 86400;
+  return totalSeconds;
 }
 
 function convertToTimeFromSeconds(seconds) {
@@ -18,7 +20,9 @@ function convertToTimeFromSeconds(seconds) {
   return { days, hours, minutes, seconds };
 }
 
-const Timer = () => {
+const today = new Date().toISOString().split("T")[0];
+console.log("today", today);
+const Home = () => {
   const [hide, setHide] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [startTimer, setStartTimer] = useState(false);
@@ -35,9 +39,8 @@ const Timer = () => {
     return () => clearInterval(intervalId);
   }, [startTimer]);
 
-  let numberOfDays;
-
   const handleDateChange = (e) => {
+    let numberOfDays;
     setHide(!hide);
     console.log("your selected: ", e.target.value);
 
@@ -74,13 +77,12 @@ const Timer = () => {
     );
     console.log("In seconds: ", totalSeconds);
     console.log("In time: ", convertToTimeFromSeconds(totalSeconds));
-
     setSeconds(totalSeconds);
     setStartTimer(true);
   };
 
-  const initialCountdown = convertToTimeFromSeconds(seconds);
-  const today = new Date().toISOString().split("T")[0];
+  const finalTimer = convertToTimeFromSeconds(seconds);
+
   return (
     <div className="center-container">
       <h1>Timer App</h1>
@@ -92,17 +94,20 @@ const Timer = () => {
               type="date"
               id="dateInput"
               name="dateInput"
-              onChange={handleDateChange}
               min={today}
+              onChange={handleDateChange}
+              // onSelect={handleDateChange}
+              // onLoadedData={handleDateChange}
             ></input>
           </>
         )}
+        {/* Display the timer  */}
         {startTimer && (
           <div>
+            <h1>{console.log(convertToTimeFromSeconds(seconds))}</h1>
             <h1>
-              {initialCountdown.days} days, {initialCountdown.hours} hours,{" "}
-              {initialCountdown.minutes} minutes, {initialCountdown.seconds}{" "}
-              seconds
+              {finalTimer.days} days, {finalTimer.hours} hours,{" "}
+              {finalTimer.minutes} minutes, {finalTimer.seconds} seconds
             </h1>
           </div>
         )}
@@ -111,4 +116,4 @@ const Timer = () => {
   );
 };
 
-export default Timer;
+export default Home;
